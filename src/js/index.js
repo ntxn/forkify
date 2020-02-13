@@ -2,6 +2,7 @@ import Search from './models/Search';
 import Recipe from './models/Recipe';
 import { elements, renderLoader, clearLoader } from './views/base';
 import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
 
 /** Global state of the app
  * - Search object
@@ -26,6 +27,7 @@ const controlSearch = async () => {
     searchView.clearInput();
     searchView.clearResult();
     renderLoader(elements.searchRes);
+    recipeView.clearRecipe();
 
     try{
       // 4. Search for recipes
@@ -62,10 +64,14 @@ elements.searchResPages.addEventListener('click', e => {
 const controlRecipe = async () => {
   // Get ID from url
   const id = window.location.hash.replace('#', '');
-  console.log(id);
 
   if (id) {
     // Prepare UI for changes
+    recipeView.clearRecipe();
+    renderLoader(elements.recipe);
+
+    // Highlight selected searched item
+    if (state.search) searchView.highlightSelected(id);
 
     // Create new recipe object
     state.recipe = new Recipe(id);
@@ -73,7 +79,6 @@ const controlRecipe = async () => {
     try {
       // Get recipe data
       await state.recipe.getRecipe();
-      console.log(state.recipe.ingredients);
       state.recipe.parseIngredients();
 
       // Calculate servings and time
@@ -81,8 +86,10 @@ const controlRecipe = async () => {
       state.recipe.calcServings();
 
       // Render recipe
-      console.log(state.recipe);
+      clearLoader();
+      recipeView.renderRecipe(state.recipe);
     } catch (error) {
+      clearLoader();
       alert('Error processing recipe');
     }
   }
