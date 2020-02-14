@@ -7,16 +7,17 @@ const formatCount = count => {
   if (count) {
     // Ex: 2.5 --> 2 1/2
     // Ex: 0.5 --> 1/2
-    const [int, dec] = count.toString().split('.').map(e => parseInt(e, 10));
-    if (!dec) return count;
+    const newCount = Math.round(count * 10000) / 10000;
+    const [int, dec] = newCount.toString().split('.').map(e => parseInt(e, 10));
+    if (!dec) return newCount;
 
     let fr;
     if (int === 0) {
-      fr = new Fraction(count);
+      fr = new Fraction(newCount);
       return `${fr.numerator}/${fr.denominator}`;
     }
 
-    fr = new Fraction(count - int);
+    fr = new Fraction(newCount - int);
     return `${int} ${fr.numerator}/${fr.denominator}`;
   }
   return '?';

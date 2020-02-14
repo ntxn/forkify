@@ -16,7 +16,6 @@ import * as likesView from './views/likesView';
  * - Liked recipes
  */
 const state = {};
-window.state = state;
 
 /**
  * SEARCH CONTROLLER
